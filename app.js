@@ -9,7 +9,7 @@ app.use( express.urlencoded( { extended: true } ) );
 
 app.get( '/users', async (req, res) => {
   try {
-    const users = await userService.get();
+    const users = await userService.getAll();
     if (users.length <= 0) {
       return res.status( 422 ).json( 'No user found.' );
     }
@@ -43,11 +43,11 @@ app.post( '/users', async (req, res) => {
     await userValidator.email( email );
     await userValidator.password( password );
 
-    const users = await userService.get();
+    const users = await userService.getAll();
     const id = users[users.length - 1].id + 1;
     const newUser = { id, name, email, password };
     users.push( newUser );
-    await userService.post( users );
+    await userService.updateAll( users );
 
     res.status( 201 ).send( `User ${newUser.name} was created` );
   } catch (e) {
@@ -60,7 +60,7 @@ app.put( '/users/:userId', async (req, res) => {
     const { userId } = req.params;
     await userValidator.id( userId );
 
-    const index = await userService.findIndex( Number( userId ) );
+    const index = await userService.getIndexById( Number( userId ) );
     await userValidator.index( index );
 
     const { name, email, password } = req.body;
@@ -68,11 +68,11 @@ app.put( '/users/:userId', async (req, res) => {
     await userValidator.email( email );
     await userValidator.password( password );
 
-    const users = await userService.get();
+    const users = await userService.getAll();
     users[index].name = name;
     users[index].email = email;
     users[index].password = password;
-    await userService.post( users );
+    await userService.updateAll( users );
 
     res.status( 201 ).send( `User ${users[index].name} was updated.` );
   } catch (e) {
@@ -85,12 +85,12 @@ app.delete( '/users/:userId', async (req, res) => {
     const { userId } = req.params;
     await userValidator.id( userId );
 
-    const index = await userService.findIndex( Number( userId ) );
+    const index = await userService.getIndexById( Number( userId ) );
     await userValidator.index( index );
 
-    const users = await userService.get();
+    const users = await userService.getAll();
     users.splice( index, 1 );
-    await userService.post( users );
+    await userService.updateAll( users );
 
     res.sendStatus( 204 );
   } catch (e) {
