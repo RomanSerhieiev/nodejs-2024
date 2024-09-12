@@ -4,7 +4,11 @@ import { IUser } from "../interfaces/user.interface";
 import { userService } from "../services/user.service";
 
 class UserController {
-  public async getAll(req: Request, res: Response, next: NextFunction) {
+  public async getAll(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       const users = await userService.getAll();
       res.send(users);
@@ -13,7 +17,11 @@ class UserController {
     }
   }
 
-  public async getById(req: Request, res: Response, next: NextFunction) {
+  public async getById(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       const userId = Number(req.params.userId);
       const user = await userService.getById(userId);
@@ -23,7 +31,11 @@ class UserController {
     }
   }
 
-  public async create(req: Request, res: Response, next: NextFunction) {
+  public async create(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       const dto = req.body as Partial<IUser>;
       const newUser = await userService.create(dto);
@@ -33,7 +45,11 @@ class UserController {
     }
   }
 
-  public async updateById(req: Request, res: Response, next: NextFunction) {
+  public async updateById(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       const userId = Number(req.params.userId);
       const dto = req.body as Partial<IUser>;
@@ -44,7 +60,11 @@ class UserController {
     }
   }
 
-  public async deleteById(req: Request, res: Response, next: NextFunction) {
+  public async deleteById(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       const userId = Number(req.params.userId);
       await userService.deleteById(userId);
