@@ -31,7 +31,7 @@ class UserService {
     await userValidator.id(userId);
     const userIndex = await userRepository.getIndexById(userId);
     await userValidator.index(userIndex);
-    return await userRepository.deleteById(userIndex);
+    await userRepository.deleteById(userIndex);
   }
 }
 
