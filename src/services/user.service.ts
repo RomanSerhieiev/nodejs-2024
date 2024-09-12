@@ -1,27 +1,38 @@
-import { readFile, writeFile } from "node:fs/promises";
-import { join } from "node:path";
-
-import { baseURL, urls } from "../constants/urls";
 import { IUser } from "../interfaces/user.interface";
+import { userRepository } from "../repositories/user.repository";
+import { userValidator } from "../validators/user.validator";
 
-const userService = {
-  getAll: async (): Promise<IUser[]> => {
-    const users = await readFile(join(baseURL, urls.users.base), {
-      encoding: "utf-8",
-    });
-    return JSON.parse(users);
-  },
-  getById: async (userId: number): Promise<IUser> => {
-    const users = await userService.getAll();
-    return users.find((user) => user.id === userId);
-  },
-  getIndexById: async (userId: number): Promise<number> => {
-    const users = await userService.getAll();
-    return users.findIndex((user) => user.id === userId);
-  },
-  updateAll: async (users: IUser[]): Promise<void> => {
-    await writeFile(join(baseURL, urls.users.base), JSON.stringify(users));
-  },
-};
+class UserService {
+  public async getAll(): Promise<IUser[]> {
+    return await userRepository.getAll();
+  }
 
-export { userService };
+  public async getById(userId: number): Promise<IUser> {
+    await userValidator.id(userId);
+    const userIndex = await userRepository.getIndexById(userId);
+    await userValidator.index(userIndex);
+    return await userRepository.getById(userIndex);
+  }
+
+  public async create(dto: Partial<IUser>): Promise<IUser> {
+    await userValidator.dto(dto);
+    return await userRepository.create(dto);
+  }
+
+  public async updateById(userId: number, dto: Partial<IUser>): Promise<IUser> {
+    await userValidator.id(userId);
+    const userIndex = await userRepository.getIndexById(userId);
+    await userValidator.index(userIndex);
+    await userValidator.dto(dto);
+    return await userRepository.updateById(userIndex, dto);
+  }
+
+  public async deleteById(userId: number): Promise<void> {
+    await userValidator.id(userId);
+    const userIndex = await userRepository.getIndexById(userId);
+    await userValidator.index(userIndex);
+    return await userRepository.deleteById(userIndex);
+  }
+}
+
+export const userService = new UserService();
