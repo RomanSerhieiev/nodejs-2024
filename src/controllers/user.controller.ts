@@ -8,10 +8,10 @@ class UserController {
     req: Request,
     res: Response,
     next: NextFunction,
-  ): Promise<void> {
+  ): Promise<Response<IUser[]>> {
     try {
       const users = await userService.getAll();
-      res.send(users);
+      return res.send(users);
     } catch (e) {
       next(e);
     }
@@ -21,11 +21,11 @@ class UserController {
     req: Request,
     res: Response,
     next: NextFunction,
-  ): Promise<void> {
+  ): Promise<Response<IUser>> {
     try {
-      const userId = Number(req.params.userId);
+      const { userId } = req.params;
       const user = await userService.getById(userId);
-      res.send(user);
+      return res.send(user);
     } catch (e) {
       next(e);
     }
@@ -35,11 +35,11 @@ class UserController {
     req: Request,
     res: Response,
     next: NextFunction,
-  ): Promise<void> {
+  ): Promise<Response<string>> {
     try {
-      const dto = req.body as Partial<IUser>;
+      const dto = req.body as IUser;
       const newUser = await userService.create(dto);
-      res.status(201).send(`User ${newUser.name} was created`);
+      return res.status(201).send(`User ${newUser.name} was created`);
     } catch (e) {
       next(e);
     }
@@ -49,12 +49,12 @@ class UserController {
     req: Request,
     res: Response,
     next: NextFunction,
-  ): Promise<void> {
+  ): Promise<Response<string>> {
     try {
-      const userId = Number(req.params.userId);
+      const { userId } = req.params;
       const dto = req.body as Partial<IUser>;
       const updatedUser = await userService.updateById(userId, dto);
-      res.status(201).send(`User ${updatedUser.name} was updated.`);
+      return res.status(201).send(`User ${updatedUser.name} was updated.`);
     } catch (e) {
       next(e);
     }
@@ -64,11 +64,11 @@ class UserController {
     req: Request,
     res: Response,
     next: NextFunction,
-  ): Promise<void> {
+  ): Promise<Response<string>> {
     try {
-      const userId = Number(req.params.userId);
-      await userService.deleteById(userId);
-      res.sendStatus(204);
+      const { userId } = req.params;
+      const deletedUser = await userService.deleteById(userId);
+      return res.status(201).send(`User ${deletedUser.name} was deleted.`);
     } catch (e) {
       next(e);
     }
