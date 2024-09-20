@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-import { config } from "../configs/confings";
+import { config } from "../configs/config";
 
 class ServerMiddleware {
   public async mongoose() {

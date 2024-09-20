@@ -1,4 +1,5 @@
 import { ApiError } from "../errors/api.error";
+import { ITokenPayload } from "../interfaces/token.interface";
 import { IUser } from "../interfaces/user.interface";
 import { userRepository } from "../repositories/user.repository";
 
@@ -12,27 +13,22 @@ class UserService {
     if (!user) {
       throw new ApiError("User not found", 404);
     }
-    return;
+    return user;
   }
 
-  public async create(dto: IUser): Promise<IUser> {
-    await this.isEmailExist(dto.email);
-    return await userRepository.create(dto);
+  public async getMe(jwtPayload: ITokenPayload): Promise<IUser> {
+    return await userRepository.getMe(jwtPayload.userId);
   }
 
-  public async updateById(userId: string, dto: Partial<IUser>): Promise<IUser> {
-    return await userRepository.updateById(userId, dto);
+  public async updateMe(
+    jwtPayload: ITokenPayload,
+    dto: Partial<IUser>,
+  ): Promise<IUser> {
+    return await userRepository.updateMe(jwtPayload.userId, dto);
   }
 
-  public async deleteById(userId: string): Promise<IUser> {
-    return await userRepository.deleteById(userId);
-  }
-
-  private async isEmailExist(email: string): Promise<void> {
-    const user = await userRepository.getByEmail(email);
-    if (user) {
-      throw new ApiError("Email already exist", 409);
-    }
+  public async deleteMe(jwtPayload: ITokenPayload): Promise<IUser> {
+    return await userRepository.deleteMe(jwtPayload.userId);
   }
 }
 

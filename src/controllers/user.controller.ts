@@ -23,51 +23,49 @@ class UserController {
     next: NextFunction,
   ): Promise<Response<IUser>> {
     try {
-      const { userId } = req.params;
-      const user = await userService.getById(userId);
+      const user = await userService.getById(req.params.userId);
       return res.send(user);
     } catch (e) {
       next(e);
     }
   }
 
-  public async create(
+  public async getMe(
     req: Request,
     res: Response,
     next: NextFunction,
-  ): Promise<Response<string>> {
+  ): Promise<Response<IUser>> {
     try {
-      const dto = req.body as IUser;
-      const newUser = await userService.create(dto);
-      return res.status(201).send(`User ${newUser.name} was created`);
+      const user = await userService.getMe(req.res.locals.jwtPayload);
+      return res.send(user);
     } catch (e) {
       next(e);
     }
   }
 
-  public async updateById(
+  public async updateMe(
     req: Request,
     res: Response,
     next: NextFunction,
   ): Promise<Response<string>> {
     try {
-      const { userId } = req.params;
-      const dto = req.body as Partial<IUser>;
-      const updatedUser = await userService.updateById(userId, dto);
+      const updatedUser = await userService.updateMe(
+        req.res.locals.jwtPayload,
+        req.body,
+      );
       return res.status(201).send(`User ${updatedUser.name} was updated.`);
     } catch (e) {
       next(e);
     }
   }
 
-  public async deleteById(
+  public async deleteMe(
     req: Request,
     res: Response,
     next: NextFunction,
   ): Promise<Response<string>> {
     try {
-      const { userId } = req.params;
-      const deletedUser = await userService.deleteById(userId);
+      const deletedUser = await userService.deleteMe(req.res.locals.jwtPayload);
       return res.status(201).send(`User ${deletedUser.name} was deleted.`);
     } catch (e) {
       next(e);
