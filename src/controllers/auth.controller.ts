@@ -29,6 +29,22 @@ class AuthController {
       next(e);
     }
   }
+
+  public async refresh(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response<TUserWithTokens>> {
+    try {
+      const userWithTokens = await authService.refresh(
+        req.res.locals.token,
+        req.res.locals.jwtPayload,
+      );
+      return res.status(200).send(userWithTokens);
+    } catch (e) {
+      next(e);
+    }
+  }
 }
 
 export const authController = new AuthController();

@@ -21,7 +21,7 @@ router.post(
 router.post(
   "/refresh",
   authMiddleware.checkToken(ETokenType.REFRESH),
-  authController.signIn,
+  authController.refresh,
 );
 
 export const authRouter = router;
