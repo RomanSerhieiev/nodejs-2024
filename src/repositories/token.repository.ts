@@ -12,7 +12,11 @@ class TokenRepository {
     return await Token.findOne(params);
   }
 
-  public async delete(_userId: Schema.Types.ObjectId): Promise<void> {
+  public async deleteByDevice(_deviceId: Schema.Types.ObjectId): Promise<void> {
+    await Token.deleteOne({ _deviceId });
+  }
+
+  public async deleteAll(_userId: Schema.Types.ObjectId): Promise<void> {
     await Token.deleteMany({ _userId });
   }
 }

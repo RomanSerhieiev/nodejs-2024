@@ -57,6 +57,12 @@ export class UserValidator {
       "any.required": "Role is required",
     });
 
+  private static device = Joi.string().messages({
+    "string.base": "Device must be a string",
+    "string.empty": "Device cannot be empty",
+    "any.required": "Device is required",
+  });
+
   private static isVerified = Joi.boolean().default(false).messages({
     "boolean.base": "isVerified must be a boolean",
   });
@@ -72,6 +78,7 @@ export class UserValidator {
     password: this.password.required(),
     phone: this.phone,
     role: this.role,
+    device: this.device.required(),
     isVerified: this.isVerified,
     isDeleted: this.isDeleted,
   });
@@ -83,6 +90,7 @@ export class UserValidator {
     password: this.password,
     phone: this.phone,
     role: this.role,
+    device: this.device.required(),
     isVerified: this.isVerified,
     isDeleted: this.isDeleted,
   });

@@ -1,7 +1,7 @@
 import { Router } from "express";
 
 import { userController } from "../controllers/user.controller";
-import { ETokenType } from "../enums/token-type.enum";
+import { ETokenType } from "../enums/token.enum";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { commonMiddleware } from "../middlewares/common.middleware";
 import { UserValidator } from "../validators/user.validator";

@@ -1,6 +1,7 @@
 import { model, Schema } from "mongoose";
 
 import { IToken } from "../interfaces/token.interface";
+import { Device } from "./device.model";
 import { User } from "./user.model";
 
 const schema = new Schema<IToken>(
@@ -17,6 +18,11 @@ const schema = new Schema<IToken>(
       type: Schema.Types.ObjectId,
       required: [true, "User id is required"],
       ref: User,
+    },
+    _deviceId: {
+      type: Schema.Types.ObjectId,
+      required: [true, "Device id is required"],
+      ref: Device,
     },
   },
   {

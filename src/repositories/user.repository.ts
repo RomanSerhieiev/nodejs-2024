@@ -2,7 +2,7 @@ import { Schema } from "mongoose";
 
 import { IUser } from "../interfaces/user.interface";
 import { User } from "../models/user.model";
-import { tokenRepository } from "./token.repository";
+import { deviceRepository } from "./device.repository";
 
 class UserRepository {
   public async getAll(): Promise<IUser[]> {
@@ -17,7 +17,7 @@ class UserRepository {
     return await User.findById(userId);
   }
 
-  public async getByEmail(email: string): Promise<IUser | null> {
+  public async findByEmail(email: string): Promise<IUser | null> {
     return await User.findOne({ email }).select("+password");
   }
 
@@ -33,7 +33,7 @@ class UserRepository {
   }
 
   public async deleteMe(userId: Schema.Types.ObjectId): Promise<IUser> {
-    await tokenRepository.delete(userId);
+    await deviceRepository.deleteAll(userId);
     return await User.findByIdAndDelete(userId);
   }
 }

@@ -1,14 +1,14 @@
 import jwt from "jsonwebtoken";
 
 import { config } from "../configs/config";
-import { ETokenType } from "../enums/token-type.enum";
+import { ETokenType } from "../enums/token.enum";
 import { ApiError } from "../errors/api.error";
 import { ITokenPair, ITokenPayload } from "../interfaces/token.interface";
 import { tokenRepository } from "../repositories/token.repository";
 
 class TokenService {
   public async generate(payload: ITokenPayload): Promise<ITokenPair> {
-    await tokenRepository.delete(payload.userId);
+    await tokenRepository.deleteByDevice(payload.deviceId);
 
     const access = jwt.sign(payload, config.JWT_ACCESS_SECRET, {
       expiresIn: config.JWT_ACCESS_EXPIRATION,

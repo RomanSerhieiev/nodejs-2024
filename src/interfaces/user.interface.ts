@@ -1,6 +1,7 @@
 import { Schema } from "mongoose";
 
 import { ERole } from "../enums/role.enum";
+import { ITokenPair } from "./token.interface";
 
 export interface IUser {
   _id?: Schema.Types.ObjectId;
@@ -10,8 +11,14 @@ export interface IUser {
   password: string;
   phone?: string;
   role: ERole;
+  device?: string;
   isVerified: boolean;
   isDeleted: boolean;
   createdAt?: Date;
   updatedAt?: Date;
+}
+
+export interface IUserWithTokens {
+  user: IUser;
+  tokens: ITokenPair;
 }

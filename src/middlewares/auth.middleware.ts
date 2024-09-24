@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { ETokenType } from "../enums/token-type.enum";
+import { ETokenType } from "../enums/token.enum";
 import { ApiError } from "../errors/api.error";
 import { IToken } from "../interfaces/token.interface";
 import { tokenRepository } from "../repositories/token.repository";
