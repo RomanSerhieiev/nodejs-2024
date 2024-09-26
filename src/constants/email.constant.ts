@@ -17,8 +17,8 @@ export const emailTemplates = {
     template: EEmailAction.FORGOT_PASSWORD,
     subject: "Don't worry, your password is under control",
   },
-  [EEmailAction.OLD_VISIT]: {
-    template: EEmailAction.OLD_VISIT,
-    subject: "You haven't visited our platform for a long time",
+  [EEmailAction.EMAIL_VERIFICATION]: {
+    template: EEmailAction.EMAIL_VERIFICATION,
+    subject: "You need to verify your email address",
   },
 };

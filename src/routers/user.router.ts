@@ -1,36 +1,38 @@
 import { Router } from "express";
 
+import { config } from "../configs/config";
 import { userController } from "../controllers/user.controller";
-import { ETokenType } from "../enums/token.enum";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { commonMiddleware } from "../middlewares/common.middleware";
 import { UserValidator } from "../validators/user.validator";
 
 const router = Router();
 
-router.get("/", userController.getAll);
+router.get("/", userController.findAll);
 
 router.get(
   "/me",
-  authMiddleware.checkToken(ETokenType.ACCESS),
-  userController.getMe,
+  authMiddleware.checkToken(config.JWT_ACCESS_SECRET),
+  userController.findMe,
 );
+
 router.put(
   "/me",
-  authMiddleware.checkToken(ETokenType.ACCESS),
-  commonMiddleware.isDtoValid(UserValidator.update),
+  authMiddleware.checkToken(config.JWT_ACCESS_SECRET),
+  commonMiddleware.isDtoValid(UserValidator.updateMe),
   userController.updateMe,
 );
+
 router.delete(
   "/me",
-  authMiddleware.checkToken(ETokenType.ACCESS),
+  authMiddleware.checkToken(config.JWT_ACCESS_SECRET),
   userController.deleteMe,
 );
 
 router.get(
   "/:userId",
   commonMiddleware.isIdValid("userId"),
-  userController.getById,
+  userController.findById,
 );
 
 export const userRouter = router;

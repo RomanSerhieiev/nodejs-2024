@@ -1,31 +1,24 @@
-import { Schema } from "mongoose";
-
 import { IDevice } from "../interfaces/device.interface";
 import { Device } from "../models/device.model";
 import { tokenRepository } from "./token.repository";
 
 class DeviceRepository {
+  public async findByParams(params: Partial<IDevice>): Promise<IDevice | null> {
+    return await Device.findOne(params);
+  }
+
   public async create(dto: IDevice): Promise<IDevice> {
     return await Device.create(dto);
   }
 
-  public async findByName(
-    name: string,
-    _userId: Schema.Types.ObjectId,
-  ): Promise<IDevice | null> {
-    return await Device.findOne({ name, _userId });
+  public async deleteOneByParams(params: Partial<IDevice>): Promise<void> {
+    await tokenRepository.deleteOneByParams(params);
+    await Device.deleteOne(params);
   }
 
-  public async deleteCurrent(
-    deviceId: Schema.Types.ObjectId,
-  ): Promise<IDevice> {
-    await tokenRepository.deleteByDevice(deviceId);
-    return await Device.findByIdAndDelete(deviceId);
-  }
-
-  public async deleteAll(_userId: Schema.Types.ObjectId): Promise<void> {
-    await tokenRepository.deleteAll(_userId);
-    await Device.deleteMany({ _userId });
+  public async deleteManyByParams(params: Partial<IDevice>): Promise<void> {
+    await tokenRepository.deleteManyByParams(params);
+    await Device.deleteMany(params);
   }
 }
 

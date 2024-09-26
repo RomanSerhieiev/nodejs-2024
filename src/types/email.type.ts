@@ -3,7 +3,10 @@ import { IEmailPayloadCombined } from "../interfaces/email.interface";
 import { TPickRequired } from "./pick.type";
 
 export type TEmailActionToPayload = {
-  [EEmailAction.SIGN_UP]: TPickRequired<IEmailPayloadCombined, "name">;
+  [EEmailAction.SIGN_UP]: TPickRequired<
+    IEmailPayloadCombined,
+    "name" | "token"
+  >;
   [EEmailAction.SIGN_IN]: TPickRequired<
     IEmailPayloadCombined,
     "name" | "deviceName" | "deviceId"
@@ -14,7 +17,10 @@ export type TEmailActionToPayload = {
   >;
   [EEmailAction.FORGOT_PASSWORD]: TPickRequired<
     IEmailPayloadCombined,
-    "email" | "name"
+    "name" | "token"
   >;
-  [EEmailAction.OLD_VISIT]: TPickRequired<IEmailPayloadCombined, "email">;
+  [EEmailAction.EMAIL_VERIFICATION]: TPickRequired<
+    IEmailPayloadCombined,
+    "email"
+  >;
 };

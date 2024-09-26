@@ -8,7 +8,6 @@ const schema = new Schema<IDevice>(
     name: {
       type: String,
       required: [true, "Name is required"],
-      unique: true,
     },
     _userId: {
       type: Schema.Types.ObjectId,
@@ -21,5 +20,7 @@ const schema = new Schema<IDevice>(
     versionKey: false,
   },
 );
+
+schema.index({ name: 1, _userId: 1 }, { unique: true });
 
 export const Device = model<IDevice>("Device", schema);

@@ -71,7 +71,7 @@ export class UserValidator {
     "boolean.base": "isDeleted must be a boolean",
   });
 
-  public static create = Joi.object({
+  public static signUp = Joi.object({
     name: this.name.required(),
     age: this.age.required(),
     email: this.email.required(),
@@ -83,15 +83,45 @@ export class UserValidator {
     isDeleted: this.isDeleted,
   });
 
-  public static update = Joi.object({
+  public static signIn = Joi.object({
+    email: this.email.required(),
+    password: this.password.required(),
+    device: this.device.required(),
+  });
+
+  public static updateMe = Joi.object({
     name: this.name,
     age: this.age,
     email: this.email,
     password: this.password,
     phone: this.phone,
     role: this.role,
-    device: this.device.required(),
     isVerified: this.isVerified,
     isDeleted: this.isDeleted,
+  });
+
+  public static changePassword = Joi.object({
+    currentPassword: this.password.required(),
+    newPassword: this.password.required(),
+    confirmPassword: this.password
+      .valid(Joi.ref("newPassword"))
+      .required()
+      .messages({
+        "any.only": "Confirm password must match new password",
+      }),
+  });
+
+  public static emailVerification = Joi.object({
+    email: this.email.required(),
+  });
+
+  public static setPassword = Joi.object({
+    newPassword: this.password.required(),
+    confirmPassword: this.password
+      .valid(Joi.ref("newPassword"))
+      .required()
+      .messages({
+        "any.only": "Confirm password must match new password",
+      }),
   });
 }

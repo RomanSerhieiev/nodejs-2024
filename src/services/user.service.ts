@@ -1,34 +1,37 @@
+import { Schema } from "mongoose";
+
 import { ApiError } from "../errors/api.error";
-import { ITokenPayload } from "../interfaces/token.interface";
 import { IUser } from "../interfaces/user.interface";
+import { deviceRepository } from "../repositories/device.repository";
 import { userRepository } from "../repositories/user.repository";
 
 class UserService {
-  public async getAll(): Promise<IUser[]> {
-    return await userRepository.getAll();
+  public async findAll(): Promise<IUser[]> {
+    return await userRepository.findAll();
   }
 
-  public async getById(userId: string): Promise<IUser> {
-    const user = await userRepository.getById(userId);
+  public async findById(userId: string): Promise<IUser> {
+    const user = await userRepository.findById(userId);
     if (!user) {
       throw new ApiError("User not found", 404);
     }
     return user;
   }
 
-  public async getMe(jwtPayload: ITokenPayload): Promise<IUser> {
-    return await userRepository.getMe(jwtPayload.userId);
+  public async findMe(userId: Schema.Types.ObjectId): Promise<IUser> {
+    return await userRepository.findMe(userId);
   }
 
   public async updateMe(
-    jwtPayload: ITokenPayload,
+    userId: Schema.Types.ObjectId,
     dto: Partial<IUser>,
   ): Promise<IUser> {
-    return await userRepository.updateMe(jwtPayload.userId, dto);
+    return await userRepository.updateMe(userId, dto);
   }
 
-  public async deleteMe(jwtPayload: ITokenPayload): Promise<IUser> {
-    return await userRepository.deleteMe(jwtPayload.userId);
+  public async deleteMe(userId: Schema.Types.ObjectId): Promise<void> {
+    await deviceRepository.deleteManyByParams({ _userId: userId });
+    await userRepository.deleteMe(userId);
   }
 }
 

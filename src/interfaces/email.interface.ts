@@ -6,4 +6,5 @@ export interface IEmailPayloadCombined {
   deviceId?: Schema.Types.ObjectId;
   message?: string;
   email?: string;
+  token?: string;
 }

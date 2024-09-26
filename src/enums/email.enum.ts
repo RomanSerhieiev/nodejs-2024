@@ -3,5 +3,5 @@ export enum EEmailAction {
   SIGN_IN = "sign-in",
   SIGN_OUT = "sign-out",
   FORGOT_PASSWORD = "forgot-password",
-  OLD_VISIT = "old-visit",
+  EMAIL_VERIFICATION = "email-verification",
 }

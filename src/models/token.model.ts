@@ -1,18 +1,19 @@
 import { model, Schema } from "mongoose";
 
+import { ETokenType } from "../enums/token.enum";
 import { IToken } from "../interfaces/token.interface";
-import { Device } from "./device.model";
 import { User } from "./user.model";
 
 const schema = new Schema<IToken>(
   {
-    access: {
+    token: {
       type: String,
-      required: [true, "Access is required"],
+      required: [true, "Token is required"],
     },
-    refresh: {
+    type: {
       type: String,
-      required: [true, "Refresh is required"],
+      required: [true, "Type is required"],
+      enum: ETokenType,
     },
     _userId: {
       type: Schema.Types.ObjectId,
@@ -21,8 +22,7 @@ const schema = new Schema<IToken>(
     },
     _deviceId: {
       type: Schema.Types.ObjectId,
-      required: [true, "Device id is required"],
-      ref: Device,
+      ref: User,
     },
   },
   {

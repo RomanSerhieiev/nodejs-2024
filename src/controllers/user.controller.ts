@@ -4,39 +4,39 @@ import { IUser } from "../interfaces/user.interface";
 import { userService } from "../services/user.service";
 
 class UserController {
-  public async getAll(
+  public async findAll(
     req: Request,
     res: Response,
     next: NextFunction,
   ): Promise<Response<IUser[]>> {
     try {
-      const users = await userService.getAll();
+      const users = await userService.findAll();
       return res.send(users);
     } catch (e) {
       next(e);
     }
   }
 
-  public async getById(
+  public async findById(
     req: Request,
     res: Response,
     next: NextFunction,
   ): Promise<Response<IUser>> {
     try {
-      const user = await userService.getById(req.params.userId);
+      const user = await userService.findById(req.params.userId);
       return res.send(user);
     } catch (e) {
       next(e);
     }
   }
 
-  public async getMe(
+  public async findMe(
     req: Request,
     res: Response,
     next: NextFunction,
   ): Promise<Response<IUser>> {
     try {
-      const user = await userService.getMe(req.res.locals.jwtPayload);
+      const user = await userService.findMe(req.res.locals.payload.userId);
       return res.send(user);
     } catch (e) {
       next(e);
@@ -47,13 +47,13 @@ class UserController {
     req: Request,
     res: Response,
     next: NextFunction,
-  ): Promise<Response<string>> {
+  ): Promise<Response<IUser>> {
     try {
-      const updatedUser = await userService.updateMe(
-        req.res.locals.jwtPayload,
+      const user = await userService.updateMe(
+        req.res.locals.payload.userId,
         req.body,
       );
-      return res.status(201).send(`User ${updatedUser.name} was updated.`);
+      return res.status(201).send(user);
     } catch (e) {
       next(e);
     }
@@ -65,8 +65,8 @@ class UserController {
     next: NextFunction,
   ): Promise<Response<string>> {
     try {
-      const deletedUser = await userService.deleteMe(req.res.locals.jwtPayload);
-      return res.status(201).send(`User ${deletedUser.name} was deleted.`);
+      await userService.deleteMe(req.res.locals.payload.userId);
+      return res.status(201).send("User was deleted.");
     } catch (e) {
       next(e);
     }

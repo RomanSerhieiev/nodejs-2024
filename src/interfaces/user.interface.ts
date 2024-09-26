@@ -10,8 +10,8 @@ export interface IUser {
   email: string;
   password: string;
   phone?: string;
-  role: ERole;
   device?: string;
+  role: ERole;
   isVerified: boolean;
   isDeleted: boolean;
   createdAt?: Date;

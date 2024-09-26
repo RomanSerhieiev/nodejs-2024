@@ -43,8 +43,9 @@ class EmailService {
   ): Promise<void> {
     try {
       const { template, subject } = emailTemplates[emailAction];
-      const mailOptions = { to, subject, template, context };
-      await this.transporter.sendMail(mailOptions);
+      context["frontUrl"] = `http://${config.APP_HOST}:${config.APP_PORT}`;
+      const options = { to, subject, template, context };
+      await this.transporter.sendMail(options);
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }

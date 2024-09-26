@@ -1,22 +1,21 @@
 import { Schema } from "mongoose";
 
-import { ERole } from "../enums/role.enum";
+import { ETokenType } from "../enums/token.enum";
 
 export interface IToken {
   _id?: Schema.Types.ObjectId;
-  access: string;
-  refresh: string;
+  token: string;
+  type: ETokenType;
   _userId: Schema.Types.ObjectId;
-  _deviceId: Schema.Types.ObjectId;
+  _deviceId?: Schema.Types.ObjectId;
 }
 
 export interface ITokenPayload {
   userId: Schema.Types.ObjectId;
   userName: string;
+  deviceId?: Schema.Types.ObjectId;
+  deviceName?: string;
   email: string;
-  deviceId: Schema.Types.ObjectId;
-  deviceName: string;
-  role: ERole;
 }
 
 export interface ITokenPair {
