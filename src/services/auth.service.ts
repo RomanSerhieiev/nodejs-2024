@@ -197,16 +197,11 @@ class AuthService {
     }
   }
 
-  public async emailVerification(
+  public async verify(
     token: string,
     _userId: Schema.Types.ObjectId,
   ): Promise<void> {
     try {
-      const verify = await tokenRepository.findByParams({ token });
-      if (!verify) {
-        throw new ApiError("Invalid token", 400);
-      }
-
       await userRepository.updateMe(_userId, { isVerified: true });
       await tokenRepository.deleteOneByParams({ token });
     } catch (e) {

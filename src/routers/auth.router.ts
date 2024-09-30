@@ -14,6 +14,11 @@ router.post(
   commonMiddleware.isDtoValid(UserValidator.signUp),
   authController.signUp,
 );
+router.put(
+  "/email-verification",
+  authMiddleware.checkToken(config.JWT_EMAIL_VERIFICATION_SECRET),
+  authController.verify,
+);
 
 router.post(
   "/sign-in",
@@ -26,7 +31,6 @@ router.post(
   authMiddleware.checkToken(config.JWT_ACCESS_SECRET),
   authController.signOut(EDevice.CURRENT),
 );
-
 router.post(
   "/sing-out/all",
   authMiddleware.checkToken(config.JWT_ACCESS_SECRET),
@@ -51,18 +55,11 @@ router.post(
   commonMiddleware.isDtoValid(UserValidator.emailVerification),
   authController.forgotPassword,
 );
-
 router.put(
   "/forgot-password",
   authMiddleware.checkToken(config.JWT_FORGOT_PASSWORD_SECRET),
   commonMiddleware.isDtoValid(UserValidator.setPassword),
   authController.setPassword,
-);
-
-router.post(
-  "/email-verification",
-  authMiddleware.checkToken(config.JWT_EMAIL_VERIFICATION_SECRET),
-  authController.emailVerification,
 );
 
 export const authRouter = router;

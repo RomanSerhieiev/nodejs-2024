@@ -109,13 +109,13 @@ class AuthController {
     }
   }
 
-  public async emailVerification(
+  public async verify(
     req: Request,
     res: Response,
     next: NextFunction,
   ): Promise<Response<string>> {
     try {
-      await authService.emailVerification(
+      await authService.verify(
         req.res.locals.token,
         req.res.locals.payload.userId,
       );

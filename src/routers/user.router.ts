@@ -15,14 +15,12 @@ router.get(
   authMiddleware.checkToken(config.JWT_ACCESS_SECRET),
   userController.findMe,
 );
-
 router.put(
   "/me",
   authMiddleware.checkToken(config.JWT_ACCESS_SECRET),
   commonMiddleware.isDtoValid(UserValidator.updateMe),
   userController.updateMe,
 );
-
 router.delete(
   "/me",
   authMiddleware.checkToken(config.JWT_ACCESS_SECRET),
