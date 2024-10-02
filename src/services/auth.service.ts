@@ -10,6 +10,7 @@ import { IPasswordChange } from "../interfaces/password.interface";
 import { ITokenPair, ITokenPayload } from "../interfaces/token.interface";
 import { IUser, IUserWithTokens } from "../interfaces/user.interface";
 import { deviceRepository } from "../repositories/device.repository";
+import { passwordRepository } from "../repositories/password.repository";
 import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
 import { TSignIn } from "../types/sign-in.type";
@@ -134,13 +135,38 @@ class AuthService {
 
   public async changePassword(
     dto: IPasswordChange,
-    userId: Schema.Types.ObjectId,
+    _userId: Schema.Types.ObjectId,
   ): Promise<void> {
     try {
-      const { password } = await userRepository.findMe(userId);
-      await this.isMatched(dto.currentPassword, password);
-      const hashedPassword = await passwordService.hash(dto.newPassword);
-      await userRepository.updateMe(userId, { password: hashedPassword });
+      const user = await userRepository.findMe(_userId);
+      await this.isMatched(dto.currentPassword, user.password);
+
+      const oldPasswords = await passwordRepository.findByParams({
+        _userId: user._id,
+      });
+      const passwords = [...oldPasswords, { password: user.password }];
+      await Promise.all(
+        passwords.map(async (oldPassword) => {
+          const isPrevious = await passwordService.compare(
+            dto.newPassword,
+            oldPassword.password,
+          );
+          if (isPrevious) {
+            throw new ApiError("Password already used", 409);
+          }
+        }),
+      );
+
+      const password = await passwordService.hash(dto.newPassword);
+      await userRepository.updateMe(_userId, { password });
+      await passwordRepository.create({
+        password: user.password,
+        _userId: user._id,
+      });
+      await tokenRepository.deleteManyByParams({
+        _userId,
+        type: { $in: [ETokenType.ACCESS, ETokenType.REFRESH] },
+      });
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }
@@ -191,7 +217,10 @@ class AuthService {
 
       const password = await passwordService.hash(newPassword);
       await userRepository.updateMe(_userId, { password });
-      await tokenRepository.deleteManyByParams({ _userId });
+      await tokenRepository.deleteManyByParams({
+        _userId,
+        type: { $in: [ETokenType.ACCESS, ETokenType.REFRESH] },
+      });
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }
@@ -238,9 +267,9 @@ class AuthService {
 
   private async isMatched(
     password: string,
-    matchedPassword: string,
+    hashedPassword: string,
   ): Promise<void> {
-    const isMatched = await passwordService.compare(password, matchedPassword);
+    const isMatched = await passwordService.compare(password, hashedPassword);
     if (!isMatched) {
       throw new ApiError("Invalid password", 401);
     }

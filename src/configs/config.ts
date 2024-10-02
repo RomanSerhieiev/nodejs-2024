@@ -18,6 +18,8 @@ export const config = {
   JWT_EMAIL_VERIFICATION_EXPIRES_IN:
     process.env.JWT_EMAIL_VERIFICATION_EXPIRES_IN,
 
+  PASSWORD_EXPIRES_IN: process.env.PASSWORD_EXPIRES_IN,
+
   SMTP_USER: process.env.SMTP_USER,
   SMTP_PASS: process.env.SMTP_PASS,
 };

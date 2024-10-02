@@ -15,7 +15,7 @@ router.post(
   authController.signUp,
 );
 router.put(
-  "/email-verification",
+  "/sign-up",
   authMiddleware.checkToken(config.JWT_EMAIL_VERIFICATION_SECRET),
   authController.verify,
 );
@@ -44,19 +44,18 @@ router.post(
 );
 
 router.post(
-  "/change-password",
+  "/password/change",
   authMiddleware.checkToken(config.JWT_ACCESS_SECRET),
   commonMiddleware.isDtoValid(UserValidator.changePassword),
   authController.changePassword,
 );
-
 router.post(
-  "/forgot-password",
+  "/password/forgot",
   commonMiddleware.isDtoValid(UserValidator.emailVerification),
   authController.forgotPassword,
 );
 router.put(
-  "/forgot-password",
+  "/password/forgot",
   authMiddleware.checkToken(config.JWT_FORGOT_PASSWORD_SECRET),
   commonMiddleware.isDtoValid(UserValidator.setPassword),
   authController.setPassword,

@@ -21,4 +21,8 @@ export const emailTemplates = {
     template: EEmailAction.EMAIL_VERIFICATION,
     subject: "You need to verify your email address",
   },
+  [EEmailAction.OLD_VISIT]: {
+    template: EEmailAction.OLD_VISIT,
+    subject: "We haven't seen you for a long time",
+  },
 };

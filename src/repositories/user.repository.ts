@@ -1,6 +1,8 @@
 import { Schema } from "mongoose";
 
+import { ETokenType } from "../enums/token.enum";
 import { IUser } from "../interfaces/user.interface";
+import { Token } from "../models/token.model";
 import { User } from "../models/user.model";
 
 class UserRepository {
@@ -18,6 +20,28 @@ class UserRepository {
 
   public async findByEmail(email: string): Promise<IUser | null> {
     return await User.findOne({ email }).select("+password");
+  }
+
+  public async findAllWithoutActivity(
+    date: Date,
+    type: ETokenType,
+  ): Promise<IUser[]> {
+    return await User.aggregate([
+      {
+        $lookup: {
+          from: Token.collection.name,
+          let: { userId: "$_id" },
+          pipeline: [
+            {
+              $match: { $expr: { $eq: ["$_userId", "$$userId"] } },
+            },
+            { $match: { createdAt: { $gt: date }, type } },
+          ],
+          as: "tokens",
+        },
+      },
+      { $match: { tokens: { $size: 0 } } },
+    ]);
   }
 
   public async createMe(dto: IUser): Promise<IUser> {

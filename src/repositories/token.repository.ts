@@ -14,8 +14,11 @@ class TokenRepository {
     await Token.deleteOne(params);
   }
 
-  public async deleteManyByParams(params: Partial<IToken>): Promise<void> {
-    await Token.deleteMany(params);
+  public async deleteManyByParams(
+    params: Partial<Record<keyof IToken, any>>,
+  ): Promise<number> {
+    const { deletedCount } = await Token.deleteMany(params);
+    return deletedCount;
   }
 }
 

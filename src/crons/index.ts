@@ -1,6 +1,9 @@
-import { removeOldTokens } from "./remove-tokens.cron";
+import { emailCron } from "./email.cron";
+import { passwordCron } from "./password.cron";
+import { tokenCron } from "./token.cron";
 
-export const cronRunner = () => {
-  console.log("cronRunner");
-  removeOldTokens.start();
+export const cronsRunner = () => {
+  tokenCron.start();
+  passwordCron.start();
+  emailCron.start();
 };

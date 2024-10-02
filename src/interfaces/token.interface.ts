@@ -8,6 +8,8 @@ export interface IToken {
   type: ETokenType;
   _userId: Schema.Types.ObjectId;
   _deviceId?: Schema.Types.ObjectId;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface ITokenPayload {

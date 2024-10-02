@@ -102,7 +102,12 @@ export class UserValidator {
 
   public static changePassword = Joi.object({
     currentPassword: this.password.required(),
-    newPassword: this.password.required(),
+    newPassword: this.password
+      .invalid(Joi.ref("currentPassword"))
+      .required()
+      .messages({
+        "any.invalid": "Current password must not match new password",
+      }),
     confirmPassword: this.password
       .valid(Joi.ref("newPassword"))
       .required()

@@ -23,4 +23,5 @@ export type TEmailActionToPayload = {
     IEmailPayloadCombined,
     "email"
   >;
+  [EEmailAction.OLD_VISIT]: TPickRequired<IEmailPayloadCombined, "name">;
 };
