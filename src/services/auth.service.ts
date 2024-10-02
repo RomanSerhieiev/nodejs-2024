@@ -140,22 +140,7 @@ class AuthService {
     try {
       const user = await userRepository.findMe(_userId);
       await this.isMatched(dto.currentPassword, user.password);
-
-      const oldPasswords = await passwordRepository.findByParams({
-        _userId: user._id,
-      });
-      const passwords = [...oldPasswords, { password: user.password }];
-      await Promise.all(
-        passwords.map(async (oldPassword) => {
-          const isPrevious = await passwordService.compare(
-            dto.newPassword,
-            oldPassword.password,
-          );
-          if (isPrevious) {
-            throw new ApiError("Password already used", 409);
-          }
-        }),
-      );
+      await this.isPasswordUsed(_userId, dto.newPassword);
 
       const password = await passwordService.hash(dto.newPassword);
       await userRepository.updateMe(_userId, { password });
@@ -206,17 +191,17 @@ class AuthService {
 
   public async setPassword(
     newPassword: string,
-    token: string,
     _userId: Schema.Types.ObjectId,
   ): Promise<void> {
     try {
-      const forgot = await tokenRepository.findByParams({ token });
-      if (!forgot) {
-        throw new ApiError("Invalid token", 400);
-      }
-
+      const user = await userRepository.findMe(_userId);
+      await this.isPasswordUsed(_userId, newPassword);
       const password = await passwordService.hash(newPassword);
       await userRepository.updateMe(_userId, { password });
+      await passwordRepository.create({
+        password: user.password,
+        _userId: user._id,
+      });
       await tokenRepository.deleteManyByParams({
         _userId,
         type: { $in: [ETokenType.ACCESS, ETokenType.REFRESH] },
@@ -243,6 +228,30 @@ class AuthService {
     if (user) {
       throw new ApiError("Email already exist", 409);
     }
+  }
+
+  private async isPasswordUsed(
+    _userId: Schema.Types.ObjectId,
+    newPassword: string,
+  ): Promise<void> {
+    const user = await userRepository.findMe(_userId);
+
+    const oldPasswords = await passwordRepository.findByParams({
+      _userId: user._id,
+    });
+    const passwords = [...oldPasswords, { password: user.password }];
+
+    await Promise.all(
+      passwords.map(async (oldPassword) => {
+        const isPrevious = await passwordService.compare(
+          newPassword,
+          oldPassword.password,
+        );
+        if (isPrevious) {
+          throw new ApiError("Password already used", 409);
+        }
+      }),
+    );
   }
 
   private async isUserExist(email: string): Promise<IUser> {

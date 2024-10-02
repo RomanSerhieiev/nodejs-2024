@@ -100,7 +100,6 @@ class AuthController {
     try {
       await authService.setPassword(
         req.body.newPassword,
-        req.res.locals.token,
         req.res.locals.payload.userId,
       );
       return res.status(200).send("Password was updated");
