@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from "express";
+import { UploadedFile } from "express-fileupload";
 
 import { IUser } from "../interfaces/user.interface";
+import { userPresenter } from "../presenters/user.presenter";
 import { userService } from "../services/user.service";
 
 class UserController {
@@ -11,7 +13,8 @@ class UserController {
   ): Promise<Response<IUser[]>> {
     try {
       const users = await userService.findAll();
-      return res.send(users);
+      const result = userPresenter.toPublicResDtoArray(users);
+      return res.send(result);
     } catch (e) {
       next(e);
     }
@@ -24,7 +27,8 @@ class UserController {
   ): Promise<Response<IUser>> {
     try {
       const user = await userService.findById(req.params.userId);
-      return res.send(user);
+      const result = userPresenter.toPublicResDto(user);
+      return res.send(result);
     } catch (e) {
       next(e);
     }
@@ -37,7 +41,8 @@ class UserController {
   ): Promise<Response<IUser>> {
     try {
       const user = await userService.findMe(req.res.locals.payload.userId);
-      return res.send(user);
+      const result = userPresenter.toPublicResDto(user);
+      return res.send(result);
     } catch (e) {
       next(e);
     }
@@ -53,7 +58,8 @@ class UserController {
         req.res.locals.payload.userId,
         req.body,
       );
-      return res.status(201).send(user);
+      const result = userPresenter.toPublicResDto(user);
+      return res.status(201).send(result);
     } catch (e) {
       next(e);
     }
@@ -67,6 +73,40 @@ class UserController {
     try {
       await userService.deleteMe(req.res.locals.payload.userId);
       return res.status(201).send("User was deleted.");
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  public async uploadAvatar(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response<IUser>> {
+    try {
+      const avatar = req.files.avatar as UploadedFile;
+      const user = await userService.uploadAvatar(
+        req.res.locals.payload.userId,
+        avatar,
+      );
+      const result = userPresenter.toPublicResDto(user);
+      return res.status(201).send(result);
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  public async deleteAvatar(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response<IUser>> {
+    try {
+      const user = await userService.deleteAvatar(
+        req.res.locals.payload.userId,
+      );
+      const result = userPresenter.toPublicResDto(user);
+      return res.status(201).send(result);
     } catch (e) {
       next(e);
     }

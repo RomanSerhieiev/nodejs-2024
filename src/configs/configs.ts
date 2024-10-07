@@ -1,8 +1,9 @@
+import { ObjectCannedACL } from "@aws-sdk/client-s3";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-export const config = {
+export const configs = {
   APP_PORT: process.env.APP_PORT || 3000,
   APP_HOST: process.env.APP_HOST,
 
@@ -20,6 +21,15 @@ export const config = {
 
   PASSWORD_EXPIRES_IN: process.env.PASSWORD_EXPIRES_IN,
 
+  SALT_OR_ROUNDS: process.env.SALT_OR_ROUNDS,
+
   SMTP_USER: process.env.SMTP_USER,
   SMTP_PASS: process.env.SMTP_PASS,
+
+  AWS_S3_REGION: process.env.AWS_S3_REGION,
+  AWS_S3_BUCKET: process.env.AWS_S3_BUCKET,
+  AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
+  AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
+  AWS_S3_ACL: process.env.AWS_S3_ACL as ObjectCannedACL,
+  AWS_S3_ENDPOINT: process.env.AWS_S3_ENDPOINT,
 };

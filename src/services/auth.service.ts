@@ -1,6 +1,6 @@
 import { Schema } from "mongoose";
 
-import { config } from "../configs/config";
+import { configs } from "../configs/configs";
 import { EDevice } from "../enums/count-devices.enum";
 import { EEmailAction } from "../enums/email.enum";
 import { ETokenType } from "../enums/token.enum";
@@ -44,8 +44,8 @@ class AuthService {
           deviceName: device.name,
           email: user.email,
         },
-        config.JWT_EMAIL_VERIFICATION_SECRET,
-        config.JWT_EMAIL_VERIFICATION_EXPIRES_IN,
+        configs.JWT_EMAIL_VERIFICATION_SECRET,
+        configs.JWT_EMAIL_VERIFICATION_EXPIRES_IN,
         ETokenType.EMAIL_VERIFICATION,
       );
       await tokenRepository.create({
@@ -170,8 +170,8 @@ class AuthService {
           userName: user.name,
           email,
         },
-        config.JWT_FORGOT_PASSWORD_SECRET,
-        config.JWT_FORGOT_PASSWORD_EXPIRES_IN,
+        configs.JWT_FORGOT_PASSWORD_SECRET,
+        configs.JWT_FORGOT_PASSWORD_EXPIRES_IN,
         ETokenType.FORGOT_PASSWORD,
       );
       await tokenRepository.create({
@@ -293,14 +293,14 @@ class AuthService {
   }: ITokenPayload): Promise<ITokenPair> {
     const access = await tokenService.generate(
       { userId, userName, deviceId, deviceName, email },
-      config.JWT_ACCESS_SECRET,
-      config.JWT_ACCESS_EXPIRES_IN,
+      configs.JWT_ACCESS_SECRET,
+      configs.JWT_ACCESS_EXPIRES_IN,
       ETokenType.ACCESS,
     );
     const refresh = await tokenService.generate(
       { userId, userName, deviceId, deviceName, email },
-      config.JWT_REFRESH_SECRET,
-      config.JWT_REFRESH_EXPIRES_IN,
+      configs.JWT_REFRESH_SECRET,
+      configs.JWT_REFRESH_EXPIRES_IN,
       ETokenType.REFRESH,
     );
 

@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { createTransport, Transporter } from "nodemailer";
 import hbs from "nodemailer-express-handlebars";
 
-import { config } from "../configs/config";
+import { configs } from "../configs/configs";
 import { emailTemplates } from "../constants/email.constant";
 import { EEmailAction } from "../enums/email.enum";
 import { ApiError } from "../errors/api.error";
@@ -17,8 +17,8 @@ class EmailService {
       from: "No reply",
       service: "gmail",
       auth: {
-        user: config.SMTP_USER,
-        pass: config.SMTP_PASS,
+        user: configs.SMTP_USER,
+        pass: configs.SMTP_PASS,
       },
     });
 
@@ -43,7 +43,7 @@ class EmailService {
   ): Promise<void> {
     try {
       const { template, subject } = emailTemplates[emailAction];
-      context["frontUrl"] = `http://${config.APP_HOST}:${config.APP_PORT}`;
+      context["frontUrl"] = `http://${configs.APP_HOST}:${configs.APP_PORT}`;
       const options = { to, subject, template, context };
       await this.transporter.sendMail(options);
     } catch (e) {

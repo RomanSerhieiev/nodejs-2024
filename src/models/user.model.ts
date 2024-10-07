@@ -43,6 +43,9 @@ const schema = new Schema<IUser, UserModel, IUserMethods>(
       enum: ERole,
       default: ERole.USER,
     },
+    avatar: {
+      type: String,
+    },
     isVerified: {
       type: Boolean,
       default: false,

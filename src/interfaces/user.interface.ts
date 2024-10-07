@@ -12,10 +12,23 @@ export interface IUser {
   phone?: string;
   device?: string;
   role: ERole;
+  avatar?: string;
   isVerified: boolean;
   isDeleted: boolean;
   createdAt?: Date;
   updatedAt?: Date;
+}
+
+export interface IUserPublicRes {
+  _id: Schema.Types.ObjectId;
+  name: string;
+  age: number;
+  email: string;
+  phone: string;
+  role: ERole;
+  avatar: string;
+  isVerified: boolean;
+  isDeleted: boolean;
 }
 
 export interface IUserWithTokens {

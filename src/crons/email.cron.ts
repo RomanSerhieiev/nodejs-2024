@@ -2,7 +2,7 @@ import { CronJob } from "cron";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 
-import { config } from "../configs/config";
+import { configs } from "../configs/configs";
 import { EEmailAction } from "../enums/email.enum";
 import { ETokenType } from "../enums/token.enum";
 import { timeHelper } from "../helpers/time.helper";
@@ -15,7 +15,7 @@ class EmailCron {
   public static async send() {
     try {
       const { value, unit } = timeHelper.parseConfigExpiration(
-        config.JWT_REFRESH_EXPIRES_IN,
+        configs.JWT_REFRESH_EXPIRES_IN,
       );
       const date = timeHelper.subtractByParams(value, unit);
       const users = await userRepository.findAllWithoutActivity(

@@ -1,8 +1,10 @@
 import bcrypt from "bcrypt";
 
+import { configs } from "../configs/configs";
+
 class PasswordService {
   public async hash(password: string): Promise<string> {
-    return await bcrypt.hash(password, 13);
+    return await bcrypt.hash(password, configs.SALT_OR_ROUNDS);
   }
 
   public async compare(

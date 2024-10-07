@@ -2,7 +2,7 @@ import { CronJob } from "cron";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 
-import { config } from "../configs/config";
+import { configs } from "../configs/configs";
 import { timeHelper } from "../helpers/time.helper";
 import { passwordRepository } from "../repositories/password.repository";
 
@@ -12,7 +12,7 @@ class PasswordCron {
   public static async delete() {
     try {
       const { value, unit } = timeHelper.parseConfigExpiration(
-        config.PASSWORD_EXPIRES_IN,
+        configs.PASSWORD_EXPIRES_IN,
       );
       const date = timeHelper.subtractByParams(value, unit);
       await passwordRepository.deleteManyByParams({
