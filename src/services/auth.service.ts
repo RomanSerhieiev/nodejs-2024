@@ -8,7 +8,11 @@ import { ApiError } from "../errors/api.error";
 import { IDevice } from "../interfaces/device.interface";
 import { IPasswordChange } from "../interfaces/password.interface";
 import { ITokenPair, ITokenPayload } from "../interfaces/token.interface";
-import { IUser, IUserWithTokens } from "../interfaces/user.interface";
+import {
+  IUserReq,
+  IUserRes,
+  IUserWithTokens,
+} from "../interfaces/user.interface";
 import { deviceRepository } from "../repositories/device.repository";
 import { passwordRepository } from "../repositories/password.repository";
 import { tokenRepository } from "../repositories/token.repository";
@@ -19,7 +23,7 @@ import { passwordService } from "./password.service";
 import { tokenService } from "./token.service";
 
 class AuthService {
-  public async signUp(dto: IUser): Promise<IUserWithTokens> {
+  public async signUp(dto: IUserReq): Promise<IUserWithTokens> {
     try {
       await this.isEmailExist(dto.email);
       const password = await passwordService.hash(dto.password);
@@ -254,7 +258,7 @@ class AuthService {
     );
   }
 
-  private async isUserExist(email: string): Promise<IUser> {
+  private async isUserExist(email: string): Promise<IUserRes> {
     const user = await userRepository.findByEmail(email);
     if (!user) {
       throw new ApiError("Invalid email or password", 401);

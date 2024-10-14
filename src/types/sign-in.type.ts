@@ -1,3 +1,3 @@
-import { IUser } from "../interfaces/user.interface";
+import { IUserReq } from "../interfaces/user.interface";
 
-export type TSignIn = Pick<IUser, "email" | "password" | "device">;
+export type TSignIn = Pick<IUserReq, "email" | "password" | "device">;

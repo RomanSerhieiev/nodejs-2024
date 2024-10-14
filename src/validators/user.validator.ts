@@ -1,7 +1,9 @@
 import Joi from "joi";
 
 import { regexConstant } from "../constants/regex.constant";
+import { EOrder, EOrderBy } from "../enums/order.enum";
 import { ERole } from "../enums/role.enum";
+import { IQuery } from "../interfaces/query.interface";
 
 export class UserValidator {
   private static name = Joi.string().trim().min(3).max(20).messages({
@@ -128,5 +130,17 @@ export class UserValidator {
       .messages({
         "any.only": "Confirm password must match new password",
       }),
+  });
+
+  public static query = Joi.object<IQuery>({
+    page: Joi.number().min(1).default(1),
+    limit: Joi.number().min(1).max(100).default(10),
+    search: Joi.string().trim().lowercase(),
+    order: Joi.string()
+      .valid(...Object.values(EOrder))
+      .default(EOrder.ASC),
+    orderBy: Joi.valid()
+      .valid(...Object.values(EOrderBy))
+      .default(EOrderBy.NAME),
   });
 }

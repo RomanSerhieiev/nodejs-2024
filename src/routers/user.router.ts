@@ -10,7 +10,11 @@ import { UserValidator } from "../validators/user.validator";
 
 const router = Router();
 
-router.get("/", userController.findAll);
+router.get(
+  "/",
+  commonMiddleware.isQueryValid(UserValidator.query),
+  userController.findAll,
+);
 
 router.get(
   "/me",

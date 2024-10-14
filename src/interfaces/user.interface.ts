@@ -1,9 +1,10 @@
 import { Schema } from "mongoose";
 
 import { ERole } from "../enums/role.enum";
+import { TPickRequired } from "../types/pick.type";
 import { ITokenPair } from "./token.interface";
 
-export interface IUser {
+export interface IUserReq {
   _id?: Schema.Types.ObjectId;
   name: string;
   age: number;
@@ -19,19 +20,22 @@ export interface IUser {
   updatedAt?: Date;
 }
 
-export interface IUserPublicRes {
-  _id: Schema.Types.ObjectId;
-  name: string;
-  age: number;
-  email: string;
-  phone: string;
-  role: ERole;
-  avatar: string;
-  isVerified: boolean;
-  isDeleted: boolean;
-}
+export interface IUserRes
+  extends Pick<
+      IUserReq,
+      | "name"
+      | "age"
+      | "email"
+      | "password"
+      | "phone"
+      | "role"
+      | "avatar"
+      | "isVerified"
+      | "isDeleted"
+    >,
+    TPickRequired<IUserReq, "_id"> {}
 
 export interface IUserWithTokens {
-  user: IUser;
+  user: IUserRes;
   tokens: ITokenPair;
 }

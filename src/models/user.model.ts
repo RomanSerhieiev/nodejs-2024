@@ -1,17 +1,17 @@
 import { HydratedDocument, Model, model, Schema } from "mongoose";
 
 import { ERole } from "../enums/role.enum";
-import { IUser } from "../interfaces/user.interface";
+import { IUserReq } from "../interfaces/user.interface";
 
 interface IUserMethods {
   getName(): string;
 }
 
-interface UserModel extends Model<IUser, object, IUserMethods> {
-  findByName(name: string): Promise<HydratedDocument<IUser, IUserMethods>>;
+interface UserModel extends Model<IUserReq, object, IUserMethods> {
+  findByName(name: string): Promise<HydratedDocument<IUserReq, IUserMethods>>;
 }
 
-const schema = new Schema<IUser, UserModel, IUserMethods>(
+const schema = new Schema<IUserReq, UserModel, IUserMethods>(
   {
     name: {
       type: String,
@@ -62,7 +62,7 @@ const schema = new Schema<IUser, UserModel, IUserMethods>(
 );
 
 schema.statics = {
-  async findByName(name: string): Promise<IUser> {
+  async findByName(name: string): Promise<IUserReq> {
     return await this.findOne({ name: name });
   },
 };
@@ -73,4 +73,4 @@ schema.methods = {
   },
 };
 
-export const User = model<IUser, UserModel>("User", schema);
+export const User = model<IUserReq, UserModel>("User", schema);

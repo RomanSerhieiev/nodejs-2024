@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { UploadedFile } from "express-fileupload";
 
-import { IUser } from "../interfaces/user.interface";
-import { userPresenter } from "../presenters/user.presenter";
+import { IPaginated } from "../interfaces/pagination.interface";
+import { IUserRes } from "../interfaces/user.interface";
 import { userService } from "../services/user.service";
 
 class UserController {
@@ -10,11 +10,10 @@ class UserController {
     req: Request,
     res: Response,
     next: NextFunction,
-  ): Promise<Response<IUser[]>> {
+  ): Promise<Response<IPaginated<IUserRes[]>>> {
     try {
-      const users = await userService.findAll();
-      const result = userPresenter.toPublicResDtoArray(users);
-      return res.send(result);
+      const users = await userService.findAll(req.query);
+      return res.send(users);
     } catch (e) {
       next(e);
     }
@@ -24,11 +23,10 @@ class UserController {
     req: Request,
     res: Response,
     next: NextFunction,
-  ): Promise<Response<IUser>> {
+  ): Promise<Response<IUserRes>> {
     try {
       const user = await userService.findById(req.params.userId);
-      const result = userPresenter.toPublicResDto(user);
-      return res.send(result);
+      return res.send(user);
     } catch (e) {
       next(e);
     }
@@ -38,11 +36,10 @@ class UserController {
     req: Request,
     res: Response,
     next: NextFunction,
-  ): Promise<Response<IUser>> {
+  ): Promise<Response<IUserRes>> {
     try {
       const user = await userService.findMe(req.res.locals.payload.userId);
-      const result = userPresenter.toPublicResDto(user);
-      return res.send(result);
+      return res.send(user);
     } catch (e) {
       next(e);
     }
@@ -52,14 +49,13 @@ class UserController {
     req: Request,
     res: Response,
     next: NextFunction,
-  ): Promise<Response<IUser>> {
+  ): Promise<Response<IUserRes>> {
     try {
       const user = await userService.updateMe(
         req.res.locals.payload.userId,
         req.body,
       );
-      const result = userPresenter.toPublicResDto(user);
-      return res.status(201).send(result);
+      return res.status(201).send(user);
     } catch (e) {
       next(e);
     }
@@ -82,15 +78,14 @@ class UserController {
     req: Request,
     res: Response,
     next: NextFunction,
-  ): Promise<Response<IUser>> {
+  ): Promise<Response<IUserRes>> {
     try {
       const avatar = req.files.avatar as UploadedFile;
       const user = await userService.uploadAvatar(
         req.res.locals.payload.userId,
         avatar,
       );
-      const result = userPresenter.toPublicResDto(user);
-      return res.status(201).send(result);
+      return res.status(201).send(user);
     } catch (e) {
       next(e);
     }
@@ -100,13 +95,12 @@ class UserController {
     req: Request,
     res: Response,
     next: NextFunction,
-  ): Promise<Response<IUser>> {
+  ): Promise<Response<IUserRes>> {
     try {
       const user = await userService.deleteAvatar(
         req.res.locals.payload.userId,
       );
-      const result = userPresenter.toPublicResDto(user);
-      return res.status(201).send(result);
+      return res.status(201).send(user);
     } catch (e) {
       next(e);
     }
